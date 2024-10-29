@@ -1,69 +1,144 @@
-<!--
-title: 'AWS Simple HTTP Endpoint example in NodeJS'
-description: 'This template demonstrates how to make a simple HTTP API with Node.js running on AWS Lambda and API Gateway using the Serverless Framework.'
-layout: Doc
-framework: v4
-platform: AWS
-language: nodeJS
-authorLink: 'https://github.com/serverless'
-authorName: 'Serverless, Inc.'
-authorAvatar: 'https://avatars1.githubusercontent.com/u/13742415?s=200&v=4'
--->
 
-# Serverless Framework Node HTTP API on AWS
+# My Lambda Project
 
-This template demonstrates how to make a simple HTTP API with Node.js running on AWS Lambda and API Gateway using the Serverless Framework.
+This project is an AWS Lambda function built using Node.js, TypeScript, and Serverless Framework. The purpose of this project is to provide a serverless setup that can be deployed and managed through AWS and Serverless Framework.
 
-This template does not include any kind of persistence (database). For more advanced examples, check out the [serverless/examples repository](https://github.com/serverless/examples/) which includes Typescript, Mongo, DynamoDB and other examples.
+## Prerequisites
 
-## Usage
+- **Node.js** (LTS version recommended)
+- **NPM** (comes with Node.js)
+- **Serverless Framework**: To install globally, run:
+  ```bash
+  npm install -g serverless
+  ```
+- **AWS Account** and credentials configured for Serverless deployment.
 
-### Deployment
-
-In order to deploy the example, you need to run the following command:
+## Project Structure
 
 ```
+my-lambda-project/
+├── src/
+│   ├── handlers/       # Lambda handlers
+│   ├── models/         # TypeScript types and interfaces
+│   ├── services/       # Core business logic
+│   └── utils/          # Utility functions
+├── package.json        # Node.js dependencies and scripts
+├── serverless.yml      # Serverless configuration file
+└── tsconfig.json       # TypeScript configuration
+```
+
+## Setup Instructions
+
+1. **Clone the repository**:
+   ```bash
+   git clone git@github.com:Mischer/my-lambda-project.git
+   cd my-lambda-project
+   ```
+
+2. **Install dependencies**:
+   ```bash
+   npm install
+   ```
+
+3. **Configure AWS Credentials**:
+   Make sure your AWS credentials are properly configured. You can configure them by running:
+   ```bash
+   aws configure
+   ```
+   Alternatively, add your credentials to `~/.aws/credentials`.
+
+4. **Build the TypeScript project**:
+   Compile TypeScript to JavaScript by running:
+   ```bash
+   npm run build
+   ```
+
+## Serverless Commands
+
+### Deploy the Lambda function
+
+To deploy the function to AWS, use:
+```bash
 serverless deploy
 ```
 
-After running deploy, you should see output similar to:
+### Invoke the Lambda function
 
+To invoke the deployed function in AWS:
+```bash
+serverless invoke -f hello
 ```
-Deploying "serverless-http-api" to stage "dev" (us-east-1)
 
-✔ Service deployed to stack serverless-http-api-dev (91s)
+### Local Testing
 
-endpoint: GET - https://xxxxxxxxxx.execute-api.us-east-1.amazonaws.com/
+To run the function locally with Serverless:
+```bash
+serverless invoke local -f hello
+```
+
+### Remove the deployed function
+
+To remove the function and associated resources from AWS:
+```bash
+serverless remove
+```
+
+## Logging
+
+View logs of the deployed Lambda function:
+```bash
+serverless logs -f hello
+```
+
+## Configuration Files
+
+### serverless.yml
+
+The `serverless.yml` file defines the Lambda function, provider configuration, and resources. Here’s an overview:
+
+```yaml
+provider:
+   name: aws
+   runtime: nodejs20.x
+   region: eu-north-1
+   environment:
+      LOG_LEVEL: info
+
 functions:
-  hello: serverless-http-api-dev-hello (1.6 kB)
+   helloWorld:
+      handler: src/handlers/helloWorld.handler
+      events:
+         - http:
+              path: hello
+              method: get
+
+plugins:
+   - serverless-offline
 ```
 
-_Note_: In current form, after deployment, your API is public and can be invoked by anyone. For production deployments, you might want to configure an authorizer. For details on how to do that, refer to [HTTP API (API Gateway V2) event docs](https://www.serverless.com/framework/docs/providers/aws/events/http-api).
+### tsconfig.json
 
-### Invocation
+The `tsconfig.json` file includes TypeScript configurations to target ES2020, enforce strict type-checking, and set `dist` as the output directory for compiled JavaScript files.
 
-After successful deployment, you can call the created application via HTTP:
+## Testing
 
-```
-curl https://xxxxxxx.execute-api.us-east-1.amazonaws.com/
-```
+Use **Jest** or another testing framework to create unit tests for your handlers, services, and utilities. Ensure all tests pass before deploying.
 
-Which should result in response similar to:
-
-```json
-{ "message": "Go Serverless v4! Your function executed successfully!" }
+To run the tests:
+```bash
+npm test
 ```
 
-### Local development
+## Deployment Pipeline (optional)
 
-The easiest way to develop and test your function is to use the `dev` command:
+For production-grade deployment, consider using CI/CD tools like **GitHub Actions**, **CircleCI**, or **AWS CodePipeline** to automate the deployment process.
 
-```
-serverless dev
-```
+---
 
-This will start a local emulator of AWS Lambda and tunnel your requests to and from AWS Lambda, allowing you to interact with your function as if it were running in the cloud.
+## Contributing
 
-Now you can invoke the function as before, but this time the function will be executed locally. Now you can develop your function locally, invoke it, and see the results immediately without having to re-deploy.
+Feel free to fork the repository, create a new branch, and submit a pull request. Ensure that code follows best practices and includes necessary tests.
 
-When you are done developing, don't forget to run `serverless deploy` to deploy the function to the cloud.
+## License
+
+This project is open-source and available under the MIT License.
