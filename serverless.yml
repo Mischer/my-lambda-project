@@ -1,0 +1,24 @@
+# "org" ensures this Service is used with the correct Serverless Framework Access Key.
+org: mischer
+# "app" enables Serverless Framework Dashboard features and sharing them with other Services.
+app: my-lambda-project
+# "service" is the name of this project. This will also be added to your AWS resource names.
+service: my-lambda-project
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: eu-north-1
+  environment:
+    LOG_LEVEL: info
+
+functions:
+  helloWorld:
+    handler: src/handlers/helloWorld.handler
+    events:
+      - http:
+          path: hello
+          method: get
+
+plugins:
+  - serverless-offline
